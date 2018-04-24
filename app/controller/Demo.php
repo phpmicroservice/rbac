@@ -13,14 +13,14 @@ class Demo extends \pms\Controller
     public function index($data)
     {
         $this->connect->send_succee([
-            $data, "我是用户分组"
+            $data, "我是RBAC分组" . time()
         ]);
     }
 
     public function demo2($data)
     {
         $this->connect->send_succee([
-            $data, "我是用户分组.demo2"
+            $data, "我是RBAC分组.demo2"
         ]);
     }
 }

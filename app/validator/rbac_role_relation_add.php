@@ -6,12 +6,13 @@
  * Time: 上午9:59
  */
 
-namespace logic\rbac\validator;
+namespace app\validator;
 
 
-use logic\rbac\model\rbac_user as user_role_relation;
+use app\model\rbac_user as user_role_relation;
+use pms\Validation\Validator;
 
-class rbac_role_relation_add extends \core\CoreValidator
+class rbac_role_relation_add extends Validator
 {
 
 

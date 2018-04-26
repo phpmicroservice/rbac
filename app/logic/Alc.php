@@ -1,321 +1,168 @@
 <?php
 
+namespace app\logic;
 
-namespace logic\rbac;
-
-use core\Sundry\Trace;
-use logic\rbac\model\rbac_resources;
-use logic\rbac\model\rbac_rule_auth;
-use logic\rbac\validation\Resources;
-use logic\rbac\validation\Atuh as validation_Atuh;
-
+use app\Base;
+use Phalcon\Acl\Adapter\Memory as AclList;
+use Phalcon\Acl\Resource;
+use Phalcon\Acl\Role;
 
 /**
- * Alc 权限控制相关
- *
- * @author Dongasai <1514582970@qq.com>
+ * alc
+ * 权限控制
+ * @author Dongasai
  */
-class Alc extends \pms\Base
+class Alc extends Base
 {
 
-    static private $resources; #资源储存变量
-    static private $auths;
+    private $aclp; #权限控制对象
+    private $roleNames;# 角色列表
 
-    /**
-     * 获取单个权限信息
-     * @param $id
-     */
-    public static function auth_info($id)
+    public function __construct($user_id = 0)
     {
-
-        $model = rbac_rule_auth::findFirstById($id);
-        if ($model === false) {
-            return "_empty-info";
-        }
-        return $model;
+        $this->load_acl(); #读取权限列表
+        $this->roleNames = User::role($user_id);
+        output($this->roleNames, 'roleNames');
 
     }
 
-    /**
-     * 删除权限
-     * @param $id
-     */
-    public static function del_auth($id)
+    public function getRoleNames()
     {
-        $validation = new \logic\user\validation\del_auth();
-        $validation->validate(['id' => $id]);
-        if ($validation->isError()) {
-            return $validation->getMessage();
-        }
-        $model = rbac_rule_auth::findFirstById($id);
-        if ($model->delete() === false) {
-            return $model->getMessage();
-        }
-        return true;
+        return $this->roleNames;
     }
 
-    /**
-     * 删除权限信息
-     * @param $role 角色
-     * @param $resources 资源
-     * @return int
-     */
-    public static function del_auth2($role, $resources)
-    {
-        $where = [
-            ' role = :role: and   resources = :resources: ',
-            'bind' => ['role' => $role, 'resources' => $resources]
-        ];
-        $model = rbac_rule_auth::findFirst($where);
-        if (empty($model)) {
-            return "_empty-info";
-        }
-        if ($model->delete() === false) {
-            return $model->getMessage();
-        }
-        return true;
-    }
 
     /**
-     * 删除资源
-     * @param $id
-     * @return bool|string
+     * 读取权限控制
      */
-    public static function del_resources($id)
+    private function load_acl()
     {
-        $validation = new \logic\rbac\validation\del_resources();
-        $validation->validate(['id' => $id]);
-        if ($validation->isError()) {
-            return $validation->getMessage();
-        }
-        $model = rbac_resources::findFirstById($id);
-        if ($model->delete() === false) {
-            return $model->getMessage();
-        }
-        return true;
-
-    }
-
-    /**
-     * 编辑权限
-     * @param $id
-     * @param $data
-     */
-    public static function edit_auth($id, $data)
-    {
-        $validation = new \logic\user\validation\Atuh();
-
-        $user_resourcesModel = rbac_rule_auth::findFirstById($id);
-        if (!$user_resourcesModel) {
-            return "_information that doesn~t exist";
-        }
-        $validation->validate($data);
-        if ($validation->getMessage()) {
-            return $validation->getMessage();
-        }
-
-        $user_resourcesModel->setData($data);
-        if ($user_resourcesModel->update() === false) {
-            return $user_resourcesModel->getMessage();
-        }
-        return true;
-    }
-
-    /**
-     * 增加权限
-     * @param $data
-     */
-    public static function add_auth($data)
-    {
-        $validation = new validation_Atuh();
-        $user_resourcesModel = new rbac_rule_auth();
-        $validation->setRepetition($user_resourcesModel, $data);
-        $validation->validate($data);
-        if ($validation->getMessage()) {
-            return $validation->getMessage();
-        }
-
-        $user_resourcesModel->setData($data);
-        if ($user_resourcesModel->save() === false) {
-            return $user_resourcesModel->getMessage();
-        }
-        return true;
-    }
-
-    /**
-     * 增加资源
-     * @param $data
-     */
-    public static function add_resources($data)
-    {
-        $data['lv'] = self::resources_lv($data['pid']);
-        $validation = new Resources();
-        $validation->validate($data);
-        if ($validation->getMessage()) {
-            return $validation->getMessage();
-        }
-        $user_resourcesModel = new rbac_resources();
 
 
-        $user_resourcesModel->setData($data);
-        if ($user_resourcesModel->save() === false) {
-            return $user_resourcesModel->getMessage();
-        }
-        return true;
-    }
-
-    /**
-     * 获取资源等级
-     * @param $pid 腹肌资源的id
-     * @return int 当前资源的等级
-     */
-    private static function resources_lv($pid)
-    {
-        if ($pid == 0) {
-            return 1;
-        }
-        $info = self::resources_info($pid);
-        return $info->lv + 1;
-    }
-
-    /**
-     *
-     */
-    public static function resources_info($id)
-    {
-        return rbac_resources::findFirstById($id);
-    }
-
-    /**
-     * 编辑资源信息
-     *
-     * @param $data
-     */
-    public static function edit_resources($data)
-    {
-        $validation = new Resources();
-        $validation->validate($data);
-        if ($validation->getMessage()) {
-            return $validation->getMessage();
-        }
-        $dob = rbac_resources::findFirst('id=' . $data['id']);
-        $data['lv'] = self::resources_lv($data['pid']);
-        $dob->setData($data);
-        if ($dob->update() === false) {
-            return $dob->getMassage();
-        }
-        return true;
-    }
-
-    /**
-     * 权限列表
-     * @param type $role_id
-     */
-    public static function auths(int $role_id, string $index = 'index')
-    {
-        if (empty(self::$auths)) {
-            self::authsAll();
-        }
-        if (isset(self::$auths[$index][$role_id])) {
-            return self::$auths[$index][$role_id];
-        } else {
-            return [];
-        }
-    }
-
-    /**
-     *  读取所有权限
-     */
-    private static function authsAll()
-    {
-        $list = rbac_rule_auth::find();
-        $index_arr = [];
-        $list2 = [];
-        foreach ($list->toArray() as $v) {
-
-            if (!isset($index_arr[$v['role']])) {
-                $index_arr[$v['role']] = [];
-                $list2[$v['role']] = [];
-            }
-            $list2[$v['role']][] = $v;
-            $index_arr[$v['role']][] = [
-                'resource' => self::ri2ra($v['resources']),
-                'type' => $v['type']
-            ];
-        }
-
-        self::$auths['index'] = $index_arr;
-        self::$auths['list'] = $list2;
-        return $index_arr;
-    }
-
-    /**
-     * 根据资源索引获取资源
-     */
-    private static function ri2ra($index)
-    {
-        if (empty(self::$resources)) {
-            self::resourcesAll();
-        }
-
-        if (isset(self::$resources['index'][$index])) {
-            return self::$resources['index'][$index];
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * 获取资源列表
-     * @param type $pid
-     */
-    private static function resourcesAll()
-    {
-        $list = rbac_resources::find();
-
-        $recursion = \tool\Arr::recursion($list->toArray(), 'pid', 'id', 0, 1);
-        self::$resources['list'] = $list;
-        self::$resources['recursion'] = $recursion;
-        $ar = [];
-        $index_array = [];
-        foreach ($recursion as $k => $v1) {
-#01
-            if (is_array($v1['sub'])) {
-                foreach ($v1['sub'] as $v2) {
-# 02
-                    if (is_array($v2['sub'])) {
-                        foreach ($v2['sub'] as $v3) {
-#03 只有进入到3级 也就是存在Action的才能算是合格的资源 否自被抛弃
-                            $name = $v1['name'] . $v2['name'];
-                            $action = $v3['name'];
-                            $index_array[$v3['id']] = [
-                                'controller' => $name,
-                                'action' => $action
-                            ];
-                            if (!isset($ar[$name])) {
-                                $ar[$name] = [];
-                            }
-                            $ar[$name] [] = $action;
-                        }
-                    }
+        $acl_data = $this->gCache->get('alc');
+        if (1) {
+            $acl = new AclList();
+            # 读取资源
+            $this->load_resources($acl);
+            // 设置默认访问级别为拒绝
+            $acl->setDefaultAction(
+                \Phalcon\Acl::DENY
+            );
+            # 读取角色列表
+            $user_roles = \app\logic\Role::roles();
+            $user_roles_index = \funch\Arr::array_change_index($user_roles->toArray(), 'id');
+            $roleObj = [];
+            foreach ($user_roles_index as $k => $role) {
+                $roleObj[$k] = new Role($role['identification'], $role['name']);
+                $acl->addRole($roleObj[$k]);
+                if ($role['pid']) {
+                    $acl->addRole($roleObj[$k], $roleObj[$k]);
                 }
+                $this->load_auth($user_roles_index, $role, $acl);
             }
+            $this->gCache->save('alc', [
+                'time' => time(),
+                'acl' => serialize($acl)
+            ], 10);
+        } else {
+            $acl = unserialize($acl_data['acl']);
         }
-        self::$resources['array'] = $ar;
-        self::$resources['index'] = $index_array;
-
-        return $ar;
+        output(get_class($acl), 65);
+        $this->aclp = $acl;
     }
 
     /**
-     * 获取资源列表
+     * 读取资源
      */
-    public static function resources($index = 'array')
+    private function load_resources(&$acl)
     {
-        if (empty(self::$resources)) {
-            self::resourcesAll();
+        # 读取用户角色列表
+        $user_roles = \app\logic\Alc2::resources();
+        foreach ($user_roles as $k => $v) {
+            // 定义 "Customers" 资源
+            $Resource = new Resource($k);
+            // 为 "customers"资源添加一组操作
+            $acl->addResource(
+                $Resource, $v
+            );
         }
-        return self::$resources[$index];
+    }
+
+
+    /**
+     * 读取权限
+     * @param type $role
+     */
+    private function load_auth($user_roles, $role, \Phalcon\Acl\Adapter\Memory &$alc)
+    {
+        $auths = \app\logic\Alc2::auths($role['id']);
+        if ($role['pid']) {
+            $this->load_auth($user_roles, $user_roles[$role['pid']], $alc);
+        }
+        foreach ($auths as $auth) {
+            if (empty($auth['resource'])) {
+                continue;
+            }
+            if ($auth['type']) {
+                $alc->allow($role['identification'], $auth['resource']['controller'], $auth['resource']['action']);
+            } else {
+                $alc->deny($role['identification'], $auth['resource']['controller'], $auth['resource']['action']);
+            }
+        }
+    }
+
+    /**
+     * 权限判断
+     * @param $resourceName
+     * @param $actionName
+     */
+    public function isAllowed($resourceName, $actionName)
+    {
+        $re = $this->isAllowed2($this->roleNames, $resourceName, $actionName);
+        output(["权限鉴定结果!", $resourceName, $actionName, $re], "info");
+        return $re;
+    }
+
+
+    /**
+     * 多角色的权限验证
+     */
+    private function isAllowed2($roleNames, $resourceName, $access): bool
+    {
+        # 角色数量
+        $roleNumber = count($roleNames);
+        $first = false; # 第一个角色
+        foreach ($roleNames as $role => $sort) {
+            # 设置一个特例 调试模式下,admin拥有所有权限
+            if ($role == 'sadmin') {
+                return true;
+            }
+
+            $isAllowed = $this->aclp->isAllowed($role, $resourceName, $access);
+
+            if ($roleNumber == 1) {
+                #单角色 直接跳出
+                break;
+            }
+            if ($roleNumber > 1 && !$first) {
+                # 第一个角色不处理
+                $first = true;
+                $isAllowedOld = $isAllowed;
+                $sortOld = $sort;
+                continue;
+            }
+            # 多角色处理
+            if ($sortOld > $sort) {
+                break;
+            } else {
+                $isAllowed = ($isAllowedOld or $isAllowed);
+            }
+            $isAllowedOld = $isAllowed;
+            $sortOld = $sort;
+        }
+        return $isAllowed;
     }
 
 }
+
+

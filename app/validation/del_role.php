@@ -1,11 +1,10 @@
 <?php
 
-namespace logic\rbac\validation;
+namespace app\validation;
 
-use core\CoreValidation;
-use logic\rbac\model\rbac_role;
-use logic\rbac\model\rbac_rule_auth;
-use logic\rbac\validator\rbac_role_del;
+use app\model\rbac_role;
+use app\model\rbac_rule_auth;
+use app\validator\rbac_role_del;
 
 
 /**
@@ -13,7 +12,7 @@ use logic\rbac\validator\rbac_role_del;
  * Class del_role
  * @package logic\user\validation
  */
-class del_role extends CoreValidation
+class del_role extends \pms\Validation
 {
 
     protected $lang = 'admin/model/user.php';
@@ -23,7 +22,7 @@ class del_role extends CoreValidation
             #验证存在
             'exist' => [
                 'message' => 'exist',
-                'class_name_list' => \logic\rbac\model\rbac_role::class
+                'class_name_list' => \app\model\rbac_role::class
             ],
             #验证引用
             'correlation' => [

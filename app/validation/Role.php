@@ -1,13 +1,13 @@
 <?php
 
-namespace logic\rbac\validation;
+namespace app\validation;
 
 /**
  * Description of Rule
  * 角色的验证器
  * @author Dongasai
  */
-class Role extends \core\CoreValidation
+class Role extends \pms\Validation
 {
     protected $lang = 'admin/model/user.php';
     protected $lang_field_prefix = 'model-user_role-field';
@@ -32,7 +32,7 @@ class Role extends \core\CoreValidation
             ],
             'repetition' => [
                 'message' => 'repetition',
-                'class_name' => 'logic\rbac\model\rbac_role',
+                'class_name' => 'app\model\rbac_role',
                 'function_name' => 'findFirstByIdentification',
 
             ]

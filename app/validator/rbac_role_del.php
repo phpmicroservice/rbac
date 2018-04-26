@@ -1,15 +1,16 @@
 <?php
 
-namespace logic\rbac\validator;
+namespace app\validator;
 
-use logic\rbac\model\rbac_role as user_role;
+use app\model\rbac_role as user_role;
+use pms\Validation\Validator;
 
 /**
  * 角色删除验证/判断是否可以删除
  * Class user_role_del
  * @package logic\user\validator
  */
-class rbac_role_del extends \core\CoreValidator
+class rbac_role_del extends Validator
 {
     /**
      * 执行验证

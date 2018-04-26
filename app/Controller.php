@@ -2,8 +2,6 @@
 
 namespace app;
 
-use pms\Validation\Message\Group;
-
 
 /**
  * 主控制器
@@ -25,9 +23,7 @@ class Controller extends \pms\Controller
     public function initialize()
     {
         $this->user_id = $this->session->user_id;
-        $this->di->setShared('message', function () {
-            return new Group();
-        });
+
         parent::initialize();
     }
 
@@ -57,6 +53,9 @@ class Controller extends \pms\Controller
             $d = $re->toArray();
             $this->connect->send_error($d['message'], $d['data'], 424);
         } else {
+            if (is_object($re)) {
+                $re = $re->toArray();
+            }
             $this->connect->send_succee($re, '成功');
         }
     }

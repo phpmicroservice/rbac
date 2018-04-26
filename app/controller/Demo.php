@@ -23,4 +23,9 @@ class Demo extends \pms\Controller
             $data, "我是RBAC分组.demo2"
         ]);
     }
+
+    public function userid()
+    {
+        $this->connect->send_succee($this->session->get('user_id'));
+    }
 }

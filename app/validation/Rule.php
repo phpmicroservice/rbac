@@ -1,13 +1,13 @@
 <?php
 
-namespace logic\rbac\validation;
+namespace app\validation;
 
 /**
  * Description of Rule
  * 规则 的验证器
  * @author Dongasai
  */
-class Rule extends \core\CoreValidation
+class Rule extends \pms\Validation
 {
 
     //定义验证规则

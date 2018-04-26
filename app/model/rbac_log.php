@@ -1,6 +1,6 @@
 <?php
 
-namespace logic\rbac\model;
+namespace app\model;
 
 /**
  * Class rbac_log 日志记录

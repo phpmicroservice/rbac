@@ -6,14 +6,14 @@
  * Time: 13:59
  */
 
-namespace logic\rbac\validation;
+namespace app\validation;
 
 /**
  *  删除权限的验证
  * Class del_auth
  * @package logic\user\validation\del_auth
  */
-class del_auth extends \core\CoreValidation
+class del_auth extends \pms\Validation
 {
     protected $lang = 'admin/model/user.php';
     protected $lang_field_prefix = 'model-user_rule_auth-field';

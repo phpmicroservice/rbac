@@ -1,18 +1,25 @@
 <?php
 
-namespace logic\rbac\validation;
+namespace app\validation;
 
-use core\CoreValidation;
+use pms\Validation;
+
 
 /**
  *  Resources 资源 的验证器
  * @package logic\user\validation
  * @author Dongasai <1514582970@qq.com>
  */
-class Resources extends CoreValidation
+class Resources extends Validation
 {
-    protected $lang = 'admin/model/user.php';
-    protected $lang_field_prefix = 'model-user_resources-field';
+
+    protected $filter_rule = [
+        ['id', 'int'],
+        ['pid', 'int'],
+        ['name', 'string'],
+        ['title', 'string'],
+        ['describe', 'string'],
+    ];
 
     //定义验证规则
     protected $rules = [
@@ -71,7 +78,7 @@ class Resources extends CoreValidation
             ],
             'exist' => [
                 "message" => "exist",
-                'class_name_list' => 'logic\rbac\model\rbac_resources',
+                'class_name_list' => 'app\model\rbac_resources',
 
             ]
         ]

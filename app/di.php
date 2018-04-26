@@ -9,6 +9,7 @@ use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\Mvc\Model\Manager as ModelsManager;
 use Phalcon\Events\Manager;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
+use pms\Validation\Message\Group;
 
 
 //注册自动加载
@@ -86,7 +87,6 @@ $di->setShared('gCache', function () use ($di) {
     return $cache;
 });
 
-
 /**
  * session缓存
  */
@@ -100,10 +100,10 @@ $di->setShared('sessionCache', function () use ($di) {
     output($di['config']->cache, 'gCache');
     $op = [
         "host" => getenv('SESSION_CACHE_HOST'),
-        "port" => getenv('SESSION_CACHE_PORT'),
-        "auth" => getenv('SESSION_CACHE_AUTH'),
-        "persistent" => getenv('SESSION_CACHE_PERSISTENT'),
-        'prefix' => getenv('SESSION_CACHE_PREFIX'),
+        "port" => get_env('SESSION_CACHE_PORT', 6379),
+        "auth" => get_env('SESSION_CACHE_AUTH', ''),
+        "persistent" => get_env('SESSION_CACHE_PERSISTENT', 1),
+        'prefix' => get_env('SESSION_CACHE_PREFIX', 'session_'),
         "index" => getenv('SESSION_CACHE_INDEX')
     ];
     if (empty($op['auth'])) {
@@ -114,6 +114,10 @@ $di->setShared('sessionCache', function () use ($di) {
     return $cache;
 });
 
+
+$di["message"] = function () {
+    return new Group();
+};
 
 $di["router"] = function () {
     $router = new \Phalcon\Mvc\Router();

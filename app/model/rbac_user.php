@@ -1,6 +1,6 @@
 <?php
 
-namespace logic\rbac\model;
+namespace app\model;
 
 /**
  * Description of user_role_relation
@@ -38,7 +38,7 @@ class rbac_user extends \pms\Mvc\Model
         $ModelsManager = $this->getModelsManager();
         return $ModelsManager->createBuilder()
             ->from(['user_role_relation' => self::class])
-            ->where('uid = ' . $uid)
+            ->where('uid= :uid:', ['uid' => $uid])
             ->orderBy('role.sort DESC')
             ->columns(['role.identification', 'role.sort', 'role_id'])
             ->join(rbac_role::class, 'user_role_relation.role_id = role.id ', 'role')

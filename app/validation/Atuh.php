@@ -2,13 +2,13 @@
 
 namespace logic\rbac\validation;
 
-use core\CoreValidation;
+use pms\Validation;
 
 /**
  * Class Atuh 权限验证
  * @package logic\user\validation
  */
-class Atuh extends CoreValidation
+class Atuh extends Validation
 {
     protected $lang = 'admin/model/user.php';
     protected $lang_field_prefix = 'model-user_role-field';
@@ -22,7 +22,7 @@ class Atuh extends CoreValidation
             ],
             'exist' => [
                 "message" => "exist",
-                'class_name_list' => 'logic\rbac\model\rbac_role',
+                'class_name_list' => 'app\model\rbac_role',
             ]
         ],
 
@@ -32,7 +32,7 @@ class Atuh extends CoreValidation
             ],
             'exist' => [
                 "message" => "exist",
-                'class_name_list' => 'logic\rbac\model\rbac_resources',
+                'class_name_list' => 'app\model\rbac_resources',
             ]
         ],
         'title' => [
@@ -94,7 +94,7 @@ class Atuh extends CoreValidation
      * 设置重复验证
      * @param type $obj 用于验证的对象
      */
-    public function setRepetition(\logic\rbac\model\rbac_rule_auth $obj, $data)
+    public function setRepetition(\app\model\rbac_rule_auth $obj, $data)
     {
         $parameter = [
             "message" => "repetition",

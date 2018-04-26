@@ -1,8 +1,9 @@
 <?php
 
-namespace logic\rbac\validator;
+namespace app\validator;
 
 use logic\rbac\model as thisModel;
+use pms\Validation\Validator;
 
 /**
  * 用户角色验证,验证用户是否属于某角色
@@ -10,7 +11,7 @@ use logic\rbac\model as thisModel;
  * Class user_role
  * @package logic\user\validator
  */
-class rbac_role extends \core\CoreValidator
+class rbac_role extends Validator
 {
 
     /**

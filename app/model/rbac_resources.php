@@ -1,7 +1,7 @@
 <?php
 
 
-namespace logic\rbac\model;
+namespace app\model;
 
 /**
  * Description of user_resources

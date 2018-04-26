@@ -1,13 +1,12 @@
 <?php
 
-namespace logic\rbac;
+namespace app\logic;
 
-use core\Sundry\Trace;
-use logic\rbac\model\rbac_role;
-use logic\rbac\model\rbac_user as user_role_relationModel;
-use logic\rbac\validation\del_role;
-use logic\rbac\validator\rbac_role_relation_add;
-use logic\rbac\validation\Role as validation_Role;
+use app\model\rbac_role;
+use app\model\rbac_user as user_role_relationModel;
+use app\validation\del_role;
+use app\validator\rbac_role_relation_add;
+use app\validation\Role as validation_Role;
 
 /**
  * Description of Role
@@ -42,7 +41,7 @@ class Role extends \pms\Base
         }
 
         if ($user_role_relationModel->delete() === false) {
-            return $user_role_relationModel->getMessage();
+            return $user_role_relationModel->getMessages();
         }
         return true;
     }
@@ -58,7 +57,6 @@ class Role extends \pms\Base
             'uid' => $user_id,
             'role_id' => $role_id
         ];
-        Trace::add('add_user', $data);
 //        user_role_relation_add
         $validation = new \core\CoreValidation();
         $validation->add_exist('role_id', [
@@ -80,7 +78,7 @@ class Role extends \pms\Base
         ]);
         $validation->validate($data);
         if ($validation->isError()) {
-            return $validation->getMessage();
+            return $validation->getMessages();
         }
         $data['status'] = 1;
         $data['step'] = 0;
@@ -91,8 +89,8 @@ class Role extends \pms\Base
         $user_role_relation = new user_role_relationModel();
         $user_role_relation->setData($data);
         if ($user_role_relation->save() === false) {
-            Trace::add('error', $user_role_relation->getMessage());
-            return $user_role_relation->getMessage();
+
+            return $user_role_relation->getMessages();
         }
         return true;
     }
@@ -102,7 +100,7 @@ class Role extends \pms\Base
      */
     public static function roles()
     {
-        return \logic\rbac\model\rbac_role::find();
+        return \app\model\rbac_role::find();
     }
 
     /**
@@ -112,6 +110,7 @@ class Role extends \pms\Base
      */
     public static function user(int $uid = 0): array
     {
+        output($uid, 113);
         $user_role_relationModel = new user_role_relationModel();
         $list = $user_role_relationModel->user_roles($uid);
         return $list;
@@ -157,7 +156,6 @@ class Role extends \pms\Base
      */
     public function role_user_list($role_id, $page)
     {
-        Trace::add('info', func_get_args());
         $modelsManager = $this->modelsManager;
         $builder = $modelsManager->createBuilder()
             ->from(user_role_relationModel::class)
@@ -195,7 +193,7 @@ class Role extends \pms\Base
         }
         foreach ($list as $user_role_relation) {
             if ($user_role_relation->delete() === false) {
-                return $user_role_relation->getMessage();
+                return $user_role_relation->getMessages();
             }
         }
         if (user_role_relationModel::count([
@@ -218,7 +216,7 @@ class Role extends \pms\Base
         $validation = new del_role();
         $validation->validate(['id' => $id]);
         if ($validation->isError()) {
-            return $validation->getMessage();
+            return $validation->getMessages();
         }
 //        $model = rbac_role::findFirstById($id);
         $model = rbac_role::findFirstById($id);
@@ -226,7 +224,7 @@ class Role extends \pms\Base
             return '_empty-info';
         }
         if ($model->delete() === false) {
-            return $model->getMessage();
+            return $model->getMessages();
         }
         return true;
 
@@ -242,7 +240,7 @@ class Role extends \pms\Base
         $validation = new validation_Role();
         $validation->validate($data);
         if ($validation->isError()) {
-            return $validation->getMessage();
+            return $validation->getMessages();
         }
         $model = rbac_role::findFirstById($data['id']);
         if ($model === false) {
@@ -252,7 +250,7 @@ class Role extends \pms\Base
         $model->setData($data);
 
         if ($model->save() === false) {
-            return $model->getMessage();
+            return $model->getMessages();
         }
         return true;
     }
@@ -290,7 +288,7 @@ class Role extends \pms\Base
         $validation = new  validation_Role();
         $validation->validate($data);
         if ($validation->isError()) {
-            return $validation->getMessage();
+            return $validation->getMessages();
         }
         $model = new rbac_role();
         $data['create_time'] = time();
@@ -298,7 +296,7 @@ class Role extends \pms\Base
         $model->setData($data);
 
         if ($model->save() === false) {
-            return $model->getMessage();
+            return $model->getMessages();
         }
         return true;
 

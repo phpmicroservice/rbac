@@ -15,24 +15,13 @@ use app\logic\Role as RoleLogic;
 class Role extends Controller
 {
 
-
-    # 角色的传送信息
-    private $parameter_role = [
-        'identification' => ['post', 'identification', 'string', '', true],
-        'name' => ['post', 'name', 'string', '名字', true],
-        'sort' => ['post', 'sort', 'int', 0, true],
-        'status' => ['post', 'status', 'int', '', true],
-        'pid' => ['post', 'pid', 'int', 1, true],
-        'can_delete' => ['post', 'can_delete', 'int', '', true]
-    ];
-
     /**
      * 增加角色
      */
     public function add_role()
     {
-        $data = $this->getData($this->parameter_role);
-        $Role = new Role();
+        $data = $this->getData();
+        $Role = new RoleLogic();
         $re = $Role->add_role($data);
         return $this->send($re);
     }
@@ -43,9 +32,8 @@ class Role extends Controller
      */
     public function edit_role()
     {
-        $this->parameter_role['id'] = ['post', 'id', 'int', 0, true];
-        $data = $this->getData($this->parameter_role);
-        $Role = new Role();
+        $data = $this->getData();
+        $Role = new RoleLogic();
         $re = $Role->edit_role($data);
         return $this->send($re);
     }
@@ -55,8 +43,8 @@ class Role extends Controller
      */
     public function del_role()
     {
-        $id = $this->request->get('id', 'int', 0);
-        $Role = new Role();
+        $id = $this->getData('id');
+        $Role = new RoleLogic();
         $re = $Role->del_role($id);
         return $this->send($re);
 
@@ -65,10 +53,10 @@ class Role extends Controller
     /**
      * 获取单个资源信息
      */
-    public function role_info()
+    public function roleinfo()
     {
-        $id = $this->request->get('id', 'int', 0);
-        $Role = new Role();
+        $id = $this->getData('id');
+        $Role = new RoleLogic();
         $re = $Role->role_info($id);
         return $this->send($re);
     }
@@ -78,9 +66,9 @@ class Role extends Controller
      */
     public function role_list()
     {
-        $Role = new Role();
+        $Role = new RoleLogic();
         $re = $Role->role_list();
-        return $this->restful_success($re);
+        return $this->send($re);
     }
 
 }

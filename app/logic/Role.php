@@ -12,7 +12,7 @@ use app\validation\Role as validation_Role;
  * Description of Role
  * @author Dongasai
  */
-class Role extends \pms\Base
+class Role extends \app\Base
 {
 
     /**
@@ -214,6 +214,7 @@ class Role extends \pms\Base
     {
 
         $validation = new del_role();
+
         $validation->validate(['id' => $id]);
         if ($validation->isError()) {
             return $validation->getMessages();
@@ -284,17 +285,20 @@ class Role extends \pms\Base
      */
     public function add_role($data)
     {
-
+        output($data, 'info');
         $validation = new  validation_Role();
-        $validation->validate($data);
-        if ($validation->isError()) {
+        $validation->add_repetition('identification', [
+            'class_name' => rbac_role::class,
+            'function_name' => 'findFirstByidentification',
+            'where' => $data['findFirstByidentification']
+        ]);
+        if (!$validation->validate($data)) {
             return $validation->getMessages();
         }
         $model = new rbac_role();
         $data['create_time'] = time();
         $data['update_time'] = 0;
         $model->setData($data);
-
         if ($model->save() === false) {
             return $model->getMessages();
         }

@@ -9,8 +9,16 @@ namespace app\validation;
  */
 class Role extends \pms\Validation
 {
-    protected $lang = 'admin/model/user.php';
-    protected $lang_field_prefix = 'model-user_role-field';
+
+    # 数据过滤规则
+    protected $filter_rule = [
+        ['identification', 'string'],
+        ['name', 'string'],
+        ['sort', 'int'],
+        ['status', 'int'],
+        ['pid', 'int'],
+        ['can_delete', 'int']
+    ];
 
     //定义验证规则
     protected $rules = [
@@ -18,23 +26,17 @@ class Role extends \pms\Validation
             'exist' => [
                 "message" => "identification",
                 "allowEmpty" => true,
-                'class_name_list' => 'logic\\rbac\\model\\rbac_role',
+                'class_name_list' => 'app\model\rbac_role',
             ]
         ],
         'identification' => [
             'required' => [
-                "message" => "identification",
+                "message" => "identification_required",
             ],
             'stringLength' => [
                 "message" => "stringLength",
                 'min' => 3,
                 'max' => 10
-            ],
-            'repetition' => [
-                'message' => 'repetition',
-                'class_name' => 'app\model\rbac_role',
-                'function_name' => 'findFirstByIdentification',
-
             ]
         ],
         'name' => [

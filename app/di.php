@@ -11,7 +11,6 @@ use Phalcon\Events\Manager;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use pms\Validation\Message\Group;
 
-
 //注册自动加载
 $loader = new \Phalcon\Loader();
 $loader->registerNamespaces(

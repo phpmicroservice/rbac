@@ -54,9 +54,10 @@ class Controller extends \pms\Controller
             $this->connect->send_error($d['message'], $d['data'], 424);
         } else {
             if (is_object($re)) {
-                $re = $re->toArray();
+                $this->connect->send_succee(json_decode(json_encode($re), true), '成功');
+            } else {
+                $this->connect->send_succee($re, '成功');
             }
-            $this->connect->send_succee($re, '成功');
         }
     }
 

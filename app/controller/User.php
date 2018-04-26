@@ -13,17 +13,16 @@ use app\logic\Role;
 class User extends Controller
 {
 
-
     /**
      * 角色的用户列表
      */
     public function role_user_list()
     {
-        $page = $this->request->get('p', 'int', 1);
-        $role_id = $this->request->get('role_id', 'int', 0);
-        $re = $this->service->role_user_list($role_id, $page);
+        $page = $this->getData('p');
+        $role_id = $this->getData('role_id');
+        $service = new \app\logic\User();
+        $re = $service->role_user_list((int)$role_id, (int)$page);
         return $this->send($re);
-
     }
 
     /**
@@ -33,9 +32,9 @@ class User extends Controller
      */
     public function role_user_is()
     {
-        $user_id = $this->request->get('user_id', 'int', 0);
-        $role_name = $this->request->get('role_name', 'string', 0);
-        $service = new \logic\rbac\Role();
+        $user_id = $this->getData('user_id');
+        $role_name = $this->getData('role_name');
+        $service = new \app\logic\User();
         $re = $service->role_user_is($user_id, $role_name);
         return $this->send($re);
     }
@@ -56,15 +55,10 @@ class User extends Controller
      */
     public function user_add_role()
     {
-        $data = $this->getData([
-            'uid' => ['post', 'user_id', 'int', 0],
-            'role_id' => ['post', 'role_id', 'int', 0],
-            'end_date' => ['post', 'end_date', 'string', '0000-00-00'],
-            'is_permanence' => ['post', 'is_permanence', 'int', 1],
-        ]);
+        $data = $this->getData();
 
 
-        $re = Role::add_user($data['uid'], $data['role_id']);
+        $re = \app\logic\User::add_user($data['uid'], $data['role_id']);
         return $this->send($re);
     }
 

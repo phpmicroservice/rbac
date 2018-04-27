@@ -10,6 +10,7 @@ namespace app\controller;
 
 use app\Controller;
 use app\logic\Alc2;
+use app\model\rbac_resources;
 
 class Resources extends Controller
 {

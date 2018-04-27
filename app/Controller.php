@@ -48,6 +48,7 @@ class Controller extends \pms\Controller
      */
     public function send($re)
     {
+        var_dump($re);
         if ($re instanceof \pms\Validation\Message\Group) {
             # 错误消息
             $d = $re->toArray();

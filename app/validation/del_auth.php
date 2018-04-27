@@ -15,14 +15,13 @@ namespace app\validation;
  */
 class del_auth extends \pms\Validation
 {
-    protected $lang = 'admin/model/user.php';
-    protected $lang_field_prefix = 'model-user_rule_auth-field';
+
     protected $rules = [
         'id' => [
             #验证存在
             'exist' => [
                 'message' => 'exist',
-                'class_name_list' => 'logic\\user\\model\\user_rule_auth'
+                'class_name_list' => 'app\\model\\rbac_rule_auth'
             ]
             # 没有引用
         ],

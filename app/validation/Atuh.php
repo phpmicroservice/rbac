@@ -10,8 +10,16 @@ use pms\Validation;
  */
 class Atuh extends Validation
 {
-    protected $lang = 'admin/model/user.php';
-    protected $lang_field_prefix = 'model-user_role-field';
+
+
+    protected $filter_rule = [
+        ['title', 'string'],
+        ['role', 'int'],
+        ['resources', 'int'],
+        ['description', 'string'],
+        ['type', 'int'],
+        ['status', 'string']
+    ]; # 数据过滤规则
 
     //定义验证规则
     protected $rules = [

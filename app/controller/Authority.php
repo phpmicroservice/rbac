@@ -3,7 +3,8 @@
 namespace app\controller;
 
 use app\Controller;
-use app\logic\Alc;
+use app\logic\Alc2;
+use app\logic\Auth;
 
 /**
  * 权限管理
@@ -14,24 +15,14 @@ class Authority extends Controller
 {
 
 
-    private $parameter_auth = [
-        'title' => ['post', 'title', 'string', '', true],
-        'role' => ['post', 'role', 'int', 0, true],
-        'resources' => ['post', 'resources', 'int', 0, true],
-        'description' => ['post', 'description', 'string', '', true],
-        'type' => ['post', 'type', 'int', 1, true],
-        'status' => ['post', 'status', 'string', '', true],
-        'condition' => ['post', 'condition', 'string', '', true],
-    ];
-
     /**
      * 权限列表
      */
     public function auth_list()
     {
-        $role = $this->request->get('role');
-        $list = Alc::auths($role, 'list');
-        return $this->restful_success($list);
+        $role = $this->getData('role_id');
+        $list = Auth::auths($role, 'list');
+        return $this->send($list);
     }
 
     /**
@@ -39,9 +30,8 @@ class Authority extends Controller
      */
     public function add_auth()
     {
-
-        $data = $this->getData($this->parameter_auth);
-        $re = Alc::add_auth($data);
+        $data = $this->getData();
+        $re = Auth::add_auth($data);
         return $this->send($re);
     }
 
@@ -50,13 +40,14 @@ class Authority extends Controller
      */
     public function edit_auth()
     {
-        $id = $this->request->getPost('id', 'int', 0);
-        $data = $this->getData($this->parameter_auth);
-        $re = Alc::edit_auth($id, $data);
+        $id = $this->getData('id');
+        $data = $this->getData();
+        $re = Auth::edit_auth($id, $data);
+        output($re, '46');
         if (is_string($re)) {
-            return $this->restful_error($re);
+            return $this->connect->send_error($re);
         }
-        return $this->restful_success($re);
+        return $this->send($re);
     }
 
     /**
@@ -65,12 +56,12 @@ class Authority extends Controller
      */
     public function auth_info()
     {
-        $id = $this->request->get('id', 'int', 0);
-        $re = Alc::auth_info($id);
+        $id = $this->getData('id');
+        $re = Auth::auth_info($id);
         if (is_string($re)) {
-            return $this->restful_error($re);
+            return $this->connect->send_error($re);
         }
-        return $this->restful_success($re);
+        return $this->send($re);
     }
 
     /**
@@ -78,21 +69,26 @@ class Authority extends Controller
      */
     public function del_auth()
     {
-        $id = $this->request->get('id', 'int', 0);
-        $re = Alc::del_auth($id);
+        $id = $this->getData('id');
+        $re = Auth::del_auth($id);
+        if (is_string($re)) {
+            return $this->connect->send_error($re);
+        }
         return $this->send($re);
     }
 
     /**
      * 删除权限
-     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
+     *
      */
     public function del_auth2()
     {
-        $role = $this->request->get('role', 'int', 0);
-        $resources = $this->request->get('resources', 'int', 0);
-        $re = Alc::del_auth2($role, $resources);
-
+        $role = $this->getData('role_id');
+        $resources = $this->getData('resources_id');
+        $re = Auth::del_auth2($role, $resources);
+        if (is_string($re)) {
+            return $this->connect->send_error($re);
+        }
         return $this->send($re);
     }
 

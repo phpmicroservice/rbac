@@ -6,7 +6,6 @@ namespace app\logic;
 use app\model\rbac_resources;
 use app\model\rbac_rule_auth;
 use app\validation\Resources;
-use app\validation\Atuh as validation_Atuh;
 
 
 /**
@@ -17,67 +16,11 @@ use app\validation\Atuh as validation_Atuh;
 class Alc2 extends \pms\Base
 {
 
+
     static private $resources; #资源储存变量
     static private $auths;
 
-    /**
-     * 获取单个权限信息
-     * @param $id
-     */
-    public static function auth_info($id)
-    {
 
-        $model = rbac_rule_auth::findFirstById($id);
-        if ($model === false) {
-            return "_empty-info";
-        }
-        return $model;
-    }
-
-    public static function getServerList()
-    {
-
-    }
-
-    /**
-     * 删除权限
-     * @param $id
-     */
-    public static function del_auth($id)
-    {
-        $validation = new \app\validation\del_auth();
-        $validation->validate(['id' => $id]);
-        if ($validation->isError()) {
-            return $validation->getMessages();
-        }
-        $model = rbac_rule_auth::findFirstById($id);
-        if ($model->delete() === false) {
-            return $model->getMessages();
-        }
-        return true;
-    }
-
-    /**
-     * 删除权限信息
-     * @param $role 角色
-     * @param $resources 资源
-     * @return int
-     */
-    public static function del_auth2($role, $resources)
-    {
-        $where = [
-            ' role = :role: and   resources = :resources: ',
-            'bind' => ['role' => $role, 'resources' => $resources]
-        ];
-        $model = rbac_rule_auth::findFirst($where);
-        if (empty($model)) {
-            return "_empty-info";
-        }
-        if ($model->delete() === false) {
-            return $model->getMessages();
-        }
-        return true;
-    }
 
     /**
      * 删除资源
@@ -99,50 +42,6 @@ class Alc2 extends \pms\Base
 
     }
 
-    /**
-     * 编辑权限
-     * @param $id
-     * @param $data
-     */
-    public static function edit_auth($id, $data)
-    {
-        $validation = new \app\validation\Atuh();
-
-        $user_resourcesModel = rbac_rule_auth::findFirstById($id);
-        if (!$user_resourcesModel) {
-            return "_information that doesn~t exist";
-        }
-        $validation->validate($data);
-        if ($validation->getMessages()) {
-            return $validation->getMessages();
-        }
-
-        $user_resourcesModel->setData($data);
-        if ($user_resourcesModel->update() === false) {
-            return $user_resourcesModel->getMessages();
-        }
-        return true;
-    }
-
-    /**
-     * 增加权限
-     * @param $data
-     */
-    public static function add_auth($data)
-    {
-        $validation = new validation_Atuh();
-        $user_resourcesModel = new rbac_rule_auth();
-        $validation->setRepetition($user_resourcesModel, $data);
-        if (!$validation->validate($data)) {
-            return $validation->getMessages();
-        }
-
-        $user_resourcesModel->setData($data);
-        if ($user_resourcesModel->save() === false) {
-            return $user_resourcesModel->getMessages();
-        }
-        return true;
-    }
 
     /**
      * 增加资源

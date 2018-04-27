@@ -39,14 +39,16 @@ class User extends Controller
         return $this->send($re);
     }
 
+
     /**
-     * 清空当前角色的用户信息
+     * 清空 角色的用户信息
      */
     public function empty_user_role()
     {
-        $role_id = $this->request->get('role_id', 'int', 0);
-        $re = $this->service->empty_user_role($role_id);
-        return $this->send($re);
+        $role_id = $this->getData('role_id');
+        $service = new \app\logic\User();
+        $re = $service->empty_user_role($role_id);
+        $this->send($re);
     }
 
 
@@ -67,20 +69,23 @@ class User extends Controller
      */
     public function user_del_role()
     {
-        $user_id = $this->request->get('user_id', 'int', 0);
-        $role_id = $this->request->get('role_id', 'int', 0);
-        $re = \logic\rbac\Role::user_del_role($role_id, $user_id);
+        $user_id = $this->getData('user_id');
+        $role_id = $this->getData('role_id');
+        $service = new \app\logic\User();
+        $re = $service->user_del_role($role_id, $user_id);
         return $this->send($re);
     }
 
 
     /**
      * 用户角色列表
+     *
      */
     public function user_role_list()
     {
-        $user_id = $this->request->get('user_id', 'int', 0);
-        $re = \logic\rbac\Role::user_roles_index($user_id);
+        $user_id = $this->getData('user_id');
+        $service = new \app\logic\User();
+        $re = $service->user_roles_index($user_id);
         return $this->send($re);
 
     }

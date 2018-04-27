@@ -2,6 +2,8 @@
 
 namespace app\controller;
 
+use app\Controller;
+
 /**
  *
  * Class Admin
@@ -14,6 +16,7 @@ class Admin extends Controller
      */
     public function updateCache()
     {
+        $this->connect->swoole_server->reload();
 
     }
 

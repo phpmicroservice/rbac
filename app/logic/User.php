@@ -12,6 +12,7 @@ use app\model\rbac_user as user_role_relationModel;
 use app\validator\rbac_role_relation_add;
 use app\Base;
 use app\validation\AddRole;
+use Phalcon\Validation\Message;
 use pms\Validation;
 
 class User extends Base
@@ -25,7 +26,7 @@ class User extends Base
      * @param bool $must 必须进行删除
      * @return bool|string
      */
-    public static function user_del_role($role_id, $user_id, $must = false)
+    public function user_del_role($role_id, $user_id, $must = false)
     {
         $where = [
             'conditions' => 'uid =:user_id: and role_id  = :role_id:',

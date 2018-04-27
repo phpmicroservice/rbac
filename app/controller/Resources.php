@@ -19,7 +19,7 @@ class Resources extends Controller
      */
     public function resources_list()
     {
-        $list = Alc2::resources('list');
+        $list = rbac_resources::find();
         $this->send($list);
 
     }

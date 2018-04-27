@@ -272,7 +272,6 @@ class Alc2 extends \pms\Base
     private static function resourcesAll()
     {
         $list = rbac_resources::find();
-
         $recursion = \funch\Arr::recursion($list->toArray(), 'pid', 'id', 0, 1);
         self::$resources['list'] = $list;
         self::$resources['recursion'] = $recursion;
@@ -303,7 +302,6 @@ class Alc2 extends \pms\Base
         }
         self::$resources['array'] = $ar;
         self::$resources['index'] = $index_array;
-
         return $ar;
     }
 

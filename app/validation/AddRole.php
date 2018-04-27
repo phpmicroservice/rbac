@@ -1,8 +1,10 @@
 <?php
 
-namespace logic\rbac\validation;
+namespace app\validation;
 
 use app\model\rbac_role;
+use app\validator\rbac_role_relation_add;
+use app\validator\ServerAction;
 use pms\Validation;
 
 /**
@@ -14,20 +16,20 @@ class AddRole extends Validation
 {
     protected function initialize()
     {
-        # 判断是否存在
+        # 判断是 角色 否存在
         $this->add_exist('role_id', [
             'message' => 'exist',
             'class_name_list' => rbac_role::class,
         ]);
-        $this->add_exist('uid', [
-            'message' => 'exist',
-            'class_name_list' => \app\model\User::class
-        ]);
-        $this->add_exist('uid', [
-            'message' => 'exist',
-            'class_name_list' => \app\model\User::class
+        # 判断用户是否存在
+        $this->add_Validator('uid', [
+            'name' => ServerAction::class,
+            'message' => 'userexit',
+            'server_action' => "user@/server/userExit",
+            'dataIndex' => 'user_id'
         ]);
 
+        # 判断关联
         $this->add_Validator('role_id', [
             'name' => rbac_role_relation_add::class,
             'message' => 'user_role_relation_add'

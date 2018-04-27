@@ -56,9 +56,7 @@ class User extends Controller
     public function user_add_role()
     {
         $data = $this->getData();
-
-
-        $re = \app\logic\User::add_user($data['uid'], $data['role_id']);
+        $re = \app\logic\User::add_user($data['user_id'], $data['role_id']);
         return $this->send($re);
     }
 

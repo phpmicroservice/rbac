@@ -11,7 +11,7 @@ namespace app\logic;
 use app\model\rbac_user as user_role_relationModel;
 use app\validator\rbac_role_relation_add;
 use app\Base;
-use logic\rbac\validation\AddRole;
+use app\validation\AddRole;
 use pms\Validation;
 
 class User extends Base

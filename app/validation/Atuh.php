@@ -1,6 +1,6 @@
 <?php
 
-namespace logic\rbac\validation;
+namespace app\validation;
 
 use pms\Validation;
 

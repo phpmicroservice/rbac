@@ -46,8 +46,8 @@ class ServerAction extends Validator
             'd' => $data,
             'accessKey' => \get_access(get_env($sername . '_APP_SECRET_KEY'), $data, SERVICE_NAME)
         ]);
-        output($re, 'va_re');
-        if ($re['e']) {
+
+        if ($re === false || $re['e']) {
             # 请求遇到错误!
             $this->type = 'request_error';
             return $this->appendMessage($validation, $attribute);

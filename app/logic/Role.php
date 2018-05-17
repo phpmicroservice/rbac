@@ -105,7 +105,8 @@ class Role extends \app\Base
         $validation->add_repetition('identification', [
             'class_name' => rbac_role::class,
             'function_name' => 'findFirstByidentification',
-            'where' => $data['findFirstByidentification']
+            'where' => $data['findFirstByidentification'],
+            'message' => 'repetition'
         ]);
         if (!$validation->validate($data)) {
             return $validation->getMessages();

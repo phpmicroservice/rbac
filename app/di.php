@@ -70,7 +70,6 @@ $di->setShared('gCache', function () use ($di) {
             "lifetime" => 172800,
         ]
     );
-    output($di['config']->cache, 'gCache');
     $op = [
         "host" => getenv('GCACHE_HOST'),
         "port" => getenv('GCACHE_PORT'),

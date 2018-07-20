@@ -20,6 +20,73 @@ class User extends Base
 
 
     /**
+     * 角色和用户绑定
+     * @param $data
+     * @return bool|string
+     */
+    public static function add_user($user_id, $role_id)
+    {
+        $data = [
+            'uid' => $user_id,
+            'role_id' => $role_id
+        ];
+//        user_role_relation_add
+        $validation = new AddRole();
+        if (!$validation->validate($data)) {
+            return $validation->getErrorMessages();
+        }
+        $data['status'] = 1;
+        $data['step'] = 0;
+        # 验证通过
+        # 判断旧数据
+        $user_role_relation = new user_role_relationModel();
+        $user_role_relation->setData($data);
+        if ($user_role_relation->save() === false) {
+            return $user_role_relation->getMessages();
+        }
+        return true;
+    }
+
+    /**
+     * 读取当前用户的权限列表
+     * @return array
+     */
+    public static function role(int $user_id)
+    {
+        # 没能读取用户的 角色信息
+        # 读取一下
+        $roles = self::user($user_id);
+        # 增加一个游客权限
+        $roles['visitor'] = 0;
+        return $roles;
+    }
+
+    /**
+     * 获取用户 的 角色 列表
+     * @param int $uid
+     * @return array
+     */
+    public static function user(int $uid = 0): array
+    {
+        output($uid, 113);
+        $user_role_relationModel = new user_role_relationModel();
+        $list = $user_role_relationModel->user_roles($uid);
+        return $list;
+    }
+
+    /**
+     * 获取 索引的用户角色列表
+     * @param int $uid
+     * @return array
+     */
+    public static function user_roles_index(int $uid): array
+    {
+        $user_role_relationModel = new user_role_relationModel();
+        $list = $user_role_relationModel->user_roles_index($uid);
+        return $list->toArray();
+    }
+
+    /**
      * 用户角色删除
      * @param $role_id 角色
      * @param $user_id 用户
@@ -36,7 +103,7 @@ class User extends Base
             ]
         ];
         $user_role_relationModel = user_role_relationModel::findFirst($where);
-        if (empty($user_role_relationModel)) {
+        if (!($user_role_relationModel instanceof user_role_relationModel)) {
             if ($must) {
                 return '_empty-info';
             } else {
@@ -45,56 +112,10 @@ class User extends Base
         }
 
         if ($user_role_relationModel->delete() === false) {
-            return $user_role_relationModel->getMessages();
+            return $user_role_relationModel->getMessage();
         }
         return true;
     }
-
-    /**
-     * 角色和用户绑定
-     * @param $data
-     * @return bool|string
-     */
-    public static function add_user($user_id, $role_id)
-    {
-        $data = [
-            'uid' => $user_id,
-            'role_id' => $role_id
-        ];
-//        user_role_relation_add
-        $validation = new AddRole();
-        $validation->validate($data);
-        if ($validation->isError()) {
-            return $validation->getMessages();
-        }
-        $data['status'] = 1;
-        $data['step'] = 0;
-        # 验证通过
-        # 判断旧数据
-        $user_role_relation = new user_role_relationModel();
-        $user_role_relation->setData($data);
-        if ($user_role_relation->save() === false) {
-
-            return $user_role_relation->getMessages();
-        }
-        return true;
-    }
-
-
-    /**
-     * 读取当前用户的权限列表
-     * @return array
-     */
-    public static function role(int $user_id)
-    {
-        # 没能读取用户的 角色信息
-        # 读取一下
-        $roles = self::user($user_id);
-        # 增加一个游客权限
-        $roles['visitor'] = 0;
-        return $roles;
-    }
-
 
     /**
      * 角色的用户列表
@@ -170,31 +191,6 @@ class User extends Base
             return false;
         }
         return true;
-    }
-
-    /**
-     * 获取用户 的 角色 列表
-     * @param int $uid
-     * @return array
-     */
-    public static function user(int $uid = 0): array
-    {
-        output($uid, 113);
-        $user_role_relationModel = new user_role_relationModel();
-        $list = $user_role_relationModel->user_roles($uid);
-        return $list;
-    }
-
-    /**
-     * 获取 索引的用户角色列表
-     * @param int $uid
-     * @return array
-     */
-    public static function user_roles_index(int $uid): array
-    {
-        $user_role_relationModel = new user_role_relationModel();
-        $list = $user_role_relationModel->user_roles_index($uid);
-        return $list->toArray();
     }
 
 }

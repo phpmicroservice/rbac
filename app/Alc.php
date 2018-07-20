@@ -21,7 +21,7 @@ class Alc extends Base
      */
     public function beforeDispatch(\Phalcon\Events\Event $Event, \pms\Dispatcher $dispatcher)
     {
-        if ($dispatcher->getTaskName() == 'server') {
+        if (in_array($dispatcher->getTaskName(), ['server', 'transaction'])) {
             return true;
         }
         output("进行权限鉴定!", 'alc');

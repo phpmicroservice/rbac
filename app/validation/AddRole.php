@@ -25,7 +25,7 @@ class AddRole extends Validation
         $this->add_Validator('uid', [
             'name' => ServerAction::class,
             'message' => 'userexit',
-            'server_action' => "user@/server/userExit",
+            'server_action' => "user@/server/user_exist",
             'dataIndex' => 'user_id'
         ]);
 

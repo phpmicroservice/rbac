@@ -7,6 +7,7 @@ use app\validation\del_role;
 use app\validation\Role as validation_Role;
 
 /**
+ * 角色
  * Description of Role
  * @author Dongasai
  */

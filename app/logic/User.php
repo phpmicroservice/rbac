@@ -1,15 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Dongasai
- * Date: 2018/4/25
- * Time: 16:38
- */
 
 namespace app\logic;
 
 use app\model\rbac_user as user_role_relationModel;
-use app\validator\rbac_role_relation_add;
 use app\Base;
 use app\validation\AddRole;
 use Phalcon\Validation\Message;

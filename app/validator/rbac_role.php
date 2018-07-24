@@ -23,17 +23,24 @@ class rbac_role extends Validator
     public function validate(\Phalcon\Validation $validation, $attribute)
     {
         $user_id = $validation->getValue($attribute);
-        $role_name = $this->getOption('role_name');
-        $role_info = thisModel\rbac_role::i4name($role_name);
-        if (!($role_info instanceof thisModel\rbac_role)) {
-            $this->type = 'role_exits';
-            return $this->appendMessage($validation, $attribute);
+        $role_id = $this->getOption('role_id', 0);
+        if ($role_id) {
+
+        } else {
+            $role_name = $this->getOption('role_name');
+            $role_info = thisModel\rbac_role::i4name($role_name);
+            if (!($role_info instanceof thisModel\rbac_role)) {
+                $this->type = 'role_exits';
+                return $this->appendMessage($validation, $attribute);
+            }
+            $role_id = $role_info->id;
         }
+
         $inf = thisModel\rbac_user::findFirst([
             'uid= :uid: and role_id=:role_id:',
             'bind' => [
                 'uid' => $user_id,
-                'role_id' => $role_info->id
+                'role_id' => $role_id
             ]]);
         if (!$inf) {
             $this->type = 'rbac_role';

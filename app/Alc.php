@@ -3,6 +3,7 @@
 namespace app;
 
 use app\logic\Alc as alcLogic;
+use pms\Dispatcher;
 
 /**
  * Class Alc
@@ -21,7 +22,14 @@ class Alc extends Base
      */
     public function beforeDispatch(\Phalcon\Events\Event $Event, \pms\Dispatcher $dispatcher)
     {
+        if (in_array($dispatcher->getTaskName(), ['index', 'demo'])) {
+            # 公共权限
+            return true;
+        }
+
         if (in_array($dispatcher->getTaskName(), ['server', 'transaction'])) {
+            # 服务间鉴权
+            $this->server_auth($dispatcher);
             return true;
         }
         output("进行权限鉴定!", 'alc');
@@ -34,5 +42,20 @@ class Alc extends Base
         return $re;
     }
 
+
+    /**
+     * 服务间的鉴权
+     * @return bool
+     */
+    private function server_auth(Dispatcher $dispatcher)
+    {
+        $key = $dispatcher->connect->accessKey??'';
+        output([APP_SECRET_KEY, $dispatcher->connect->getData(), $dispatcher->connect->f], 'verify_access');
+        if (!verify_access($key, APP_SECRET_KEY, $dispatcher->connect->getData(), $dispatcher->connect->f)) {
+            $dispatcher->connect->send_error('accessKey-error', [], 412);
+            return false;
+        }
+        return true;
+    }
 
 }

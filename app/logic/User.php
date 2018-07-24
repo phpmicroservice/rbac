@@ -159,7 +159,8 @@ class User extends Base
         }
         if (user_role_relationModel::count([
                 'role_id = :role_id:',
-                'bind' => ['role_id' => $role_id]]) > 0) {
+                'bind' => ['role_id' => $role_id]]) > 0
+        ) {
             return '大于100,只删除了前100个';
         } else {
             return '成功!';
@@ -173,17 +174,26 @@ class User extends Base
      * @return bool 是否存在
      * @throws \Phalcon\Validation\Exception 验证器不存在
      */
-    public function role_user_is($user_id, $role_name)
+    public function role_user_is($user_id, $role_name = '', $role_id = 0)
     {
-        $validation = new Validation();;
-        $validation->add_Validator('user_id', [
-            'name' => \app\validator\rbac_role::class,
-            'role_name' => $role_name
-        ]);
-        if (!$validation->validate(['user_id' => $user_id])) {
-            return false;
+        $key = md5(serialize([$user_id, $role_name, $role_id]));
+        if ($this->gCache->exists($key)) {
+            return $this->gCache->get($key);
+        } else {
+
+            $validation = new Validation();;
+            $validation->add_Validator('user_id', [
+                'name' => \app\validator\rbac_role::class,
+                'role_name' => $role_name,
+                'role_id' => $role_id
+            ]);
+            if (!$validation->validate(['user_id' => $user_id])) {
+                $re = false;
+            }
+            $re = true;
+            $this->gCache->save($key, $re);
+            return $this->gCache->get($key);
         }
-        return true;
     }
 
 }

@@ -35,7 +35,7 @@ class User extends Base
         $user_role_relation = new user_role_relationModel();
         $user_role_relation->setData($data);
         if ($user_role_relation->save() === false) {
-            return $user_role_relation->getMessages();
+            return $user_role_relation->getMessage();
         }
         return true;
     }

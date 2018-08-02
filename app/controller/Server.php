@@ -24,4 +24,16 @@ class Server extends Controller
 
     }
 
+    /**
+     * 增加时间
+     */
+    public function add_role()
+    {
+        $user_id = $this->getData('user_id');
+        $role_id = $this->getData('role_id');
+        $re = \app\logic\User::add_user($user_id, $role_id);
+        $this->send($re);
+
+    }
+
 }

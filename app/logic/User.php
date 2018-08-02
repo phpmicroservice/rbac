@@ -176,24 +176,18 @@ class User extends Base
      */
     public function role_user_is($user_id, $role_name = '', $role_id = 0)
     {
-        $key = md5(serialize([$user_id, $role_name, $role_id]));
-        if ($this->gCache->exists($key)) {
-            return $this->gCache->get($key);
+        $validation = new Validation();;
+        $validation->add_Validator('user_id', [
+            'name' => \app\validator\rbac_role::class,
+            'role_name' => $role_name,
+            'role_id' => $role_id
+        ]);
+        if (!$validation->validate(['user_id' => $user_id])) {
+            $re = false;
         } else {
-
-            $validation = new Validation();;
-            $validation->add_Validator('user_id', [
-                'name' => \app\validator\rbac_role::class,
-                'role_name' => $role_name,
-                'role_id' => $role_id
-            ]);
-            if (!$validation->validate(['user_id' => $user_id])) {
-                $re = false;
-            }
             $re = true;
-            $this->gCache->save($key, $re);
-            return $this->gCache->get($key);
         }
+        return $re;
     }
 
 }

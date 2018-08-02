@@ -52,14 +52,23 @@ class Alc extends Base
             $user_roles = \app\logic\Role::roles();
             $user_roles_index = \funch\Arr::array_change_index($user_roles->toArray(), 'id');
             $roleObj = [];
+            # 添加基础角色
             foreach ($user_roles_index as $k => $role) {
-
-                $roleObj[$k] = new Role($role['identification'], $role['name']);
-                $acl->addRole($roleObj[$k]);
-                if ($role['pid']) {
-                    $acl->addRole($roleObj[$k], $roleObj[$k]);
+                if (!$role['pid']) {
+                    $roleObj[$k] = new Role($role['identification'], $role['name']);
+                    $acl->addRole($roleObj[$k]);
+                    $this->load_auth($user_roles_index, $role, $acl);
                 }
-                $this->load_auth($user_roles_index, $role, $acl);
+
+
+            }
+            # 添加子集角色
+            foreach ($user_roles_index as $k => $role) {
+                if ($role['pid']) {
+                    $roleObj[$k] = new Role($role['identification'], $role['name']);
+                    $acl->addRole($roleObj[$k], $user_roles_index[$role['id']]['identification']);
+                    $this->load_auth($user_roles_index, $role, $acl);
+                }
             }
 
             $this->gCache->save('alc', $acl, 2);
@@ -101,6 +110,7 @@ class Alc extends Base
             if (empty($auth['resource'])) {
                 continue;
             }
+
             if ($auth['type']) {
                 $alc->allow($role['identification'], $auth['resource']['controller'], $auth['resource']['action']);
             } else {
@@ -130,38 +140,16 @@ class Alc extends Base
     private function isAllowed2($roleNames, $resourceName, $access): bool
     {
         # 角色数量
-        $roleNumber = count($roleNames);
-        $first = false; # 第一个角色
         var_dump($roleNames);
         foreach ($roleNames as $role => $sort) {
             # 设置一个特例 调试模式下,admin拥有所有权限
             if ($role == 'sadmin') {
                 return true;
             }
-
             $isAllowed = $this->aclp->isAllowed($role, $resourceName, $access);
-            var_dump($isAllowed);
-
-            if ($roleNumber == 1) {
-                #单角色 直接跳出
-                break;
+            if($isAllowed){
+                return  true;
             }
-            if ($roleNumber > 1 && !$first) {
-                # 第一个角色不处理
-                $first = true;
-                $isAllowedOld = $isAllowed;
-                $sortOld = $sort;
-                continue;
-            }
-            # 多角色处理
-            if ($sortOld > $sort) {
-                $isAllowed = $isAllowedOld;
-                break;
-            } else {
-                $isAllowed = ($isAllowedOld or $isAllowed);
-            }
-            $isAllowedOld = $isAllowed;
-            $sortOld = $sort;
         }
         return $isAllowed;
     }

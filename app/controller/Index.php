@@ -14,7 +14,7 @@ class Index extends \app\Controller
      */
     public function alc()
     {
-        $servername = $this->getData('sn');
+        $servername = $this->connect->f;
         $cname = $this->getData('c');
         $aname = $this->getData('a');
         $user_id = $this->getData('u');

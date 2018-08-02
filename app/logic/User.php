@@ -176,6 +176,9 @@ class User extends Base
      */
     public function role_user_is($user_id, $role_name = '', $role_id = 0)
     {
+        if($role_name =='visitor'){
+            return true;
+        }
         $validation = new Validation();;
         $validation->add_Validator('user_id', [
             'name' => \app\validator\rbac_role::class,

@@ -55,8 +55,7 @@ class Alc2 extends \pms\Base
             return $validation->getMessages();
         }
         $user_resourcesModel = new rbac_resources();
-
-
+        $data['name']=strtolower($data['name']);
         $user_resourcesModel->setData($data);
         if ($user_resourcesModel->save() === false) {
             return $user_resourcesModel->getMessages();

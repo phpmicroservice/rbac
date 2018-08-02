@@ -27,16 +27,15 @@ class Controller extends \pms\Controller
         parent::initialize();
     }
 
-
     /**
      * 获取数据
      * @param $pa
      */
-    public function getData($name = '')
+    public function getData($name = '', $defind = null)
     {
         $d = $this->connect->getData();
         if ($name) {
-            return $d[$name] ?? null;
+            return $d[$name] ?? $defind;
         }
         return $d;
     }

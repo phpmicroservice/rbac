@@ -27,6 +27,7 @@ class Authority extends Controller
 
     /**
      * 增加权限
+     * 
      */
     public function add_auth()
     {

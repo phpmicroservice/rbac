@@ -53,6 +53,7 @@ class Alc extends Base
             $user_roles_index = \funch\Arr::array_change_index($user_roles->toArray(), 'id');
             $roleObj = [];
             foreach ($user_roles_index as $k => $role) {
+
                 $roleObj[$k] = new Role($role['identification'], $role['name']);
                 $acl->addRole($roleObj[$k]);
                 if ($role['pid']) {
@@ -60,14 +61,11 @@ class Alc extends Base
                 }
                 $this->load_auth($user_roles_index, $role, $acl);
             }
-            $this->gCache->save('alc', [
-                'time' => time(),
-                'acl' => serialize($acl)
-            ], 10);
+
+            $this->gCache->save('alc', $acl, 2);
         } else {
-            $acl = unserialize($acl_data['acl']);
+            $acl = unserialize($acl_data);
         }
-        output(get_class($acl), 65);
         $this->aclp = $acl;
     }
 
@@ -118,6 +116,8 @@ class Alc extends Base
      */
     public function isAllowed($resourceName, $actionName)
     {
+        $resourceName = strtolower($resourceName);
+        $actionName = strtolower($actionName);
         $re = $this->isAllowed2($this->roleNames, $resourceName, $actionName);
         output(["权限鉴定结果!", $resourceName, $actionName, $re], "info");
         return $re;
@@ -132,6 +132,7 @@ class Alc extends Base
         # 角色数量
         $roleNumber = count($roleNames);
         $first = false; # 第一个角色
+        var_dump($roleNames);
         foreach ($roleNames as $role => $sort) {
             # 设置一个特例 调试模式下,admin拥有所有权限
             if ($role == 'sadmin') {
@@ -139,6 +140,7 @@ class Alc extends Base
             }
 
             $isAllowed = $this->aclp->isAllowed($role, $resourceName, $access);
+            var_dump($isAllowed);
 
             if ($roleNumber == 1) {
                 #单角色 直接跳出
@@ -153,6 +155,7 @@ class Alc extends Base
             }
             # 多角色处理
             if ($sortOld > $sort) {
+                $isAllowed = $isAllowedOld;
                 break;
             } else {
                 $isAllowed = ($isAllowedOld or $isAllowed);

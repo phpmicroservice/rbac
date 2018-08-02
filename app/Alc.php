@@ -2,7 +2,6 @@
 
 namespace app;
 
-use app\logic\Alc as alcLogic;
 use pms\Dispatcher;
 
 /**
@@ -32,9 +31,9 @@ class Alc extends Base
             $this->server_auth($dispatcher);
             return true;
         }
-        output("进行权限鉴定!", 'alc');
+
         $this->user_id = (int)$dispatcher->session->get('user_id', 0);
-        $alc = new alcLogic($this->user_id);
+        $alc = new \app\logic\Alc($this->user_id);
         $re = $alc->isAllowed(SERVICE_NAME . $dispatcher->getTaskName(), $dispatcher->getActionName());
         if (!$re) {
             $dispatcher->connect->send_error("没有权限!", [$this->user_id, $alc->getRoleNames()], 401);

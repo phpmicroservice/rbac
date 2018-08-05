@@ -16,8 +16,8 @@ class Admin extends Controller
      */
     public function updateCache()
     {
-        $this->swoole_server->shutdown();
         $this->send(true);
+        $this->swoole_server->shutdown();
     }
 
 }

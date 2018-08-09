@@ -192,16 +192,6 @@ class User extends Base
         return $re;
     }
 
-    /**
-     * 创始人不可以删除
-     * @return bool
-     */
-    public function beforeDelete()
-    {
-        if ($this->id == 1) {
-            return false;
-        }
-        return true;
-    }
+
 
 }

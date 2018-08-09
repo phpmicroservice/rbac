@@ -46,4 +46,16 @@ class rbac_user extends \pms\Mvc\Model
             ->execute();
     }
 
+    /**
+     * 创始人不可以删除
+     * @return bool
+     */
+    public function beforeDelete()
+    {
+        if ($this->id == 1) {
+            return false;
+        }
+        return true;
+    }
+
 }

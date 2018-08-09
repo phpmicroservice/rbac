@@ -2,6 +2,7 @@
 
 namespace app\logic;
 
+use app\filterTool\AddRole;
 use app\model\rbac_role;
 use app\validation\del_role;
 use app\validation\Role as validation_Role;
@@ -102,6 +103,8 @@ class Role extends \app\Base
     public function add_role($data)
     {
         output($data, 'info');
+        $ft =new AddRole();
+        $ft->filter($data);
         $validation = new  validation_Role();
         $validation->add_repetition('identification', [
             'class_name' => rbac_role::class,

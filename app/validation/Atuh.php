@@ -11,16 +11,6 @@ use pms\Validation;
 class Atuh extends Validation
 {
 
-
-    protected $filter_rule = [
-        ['title', 'string'],
-        ['role', 'int'],
-        ['resources', 'int'],
-        ['description', 'string'],
-        ['type', 'int'],
-        ['status', 'string']
-    ]; # 数据过滤规则
-
     //定义验证规则
     protected $rules = [
 

@@ -5,7 +5,6 @@ namespace app\logic;
 use app\model\rbac_user as user_role_relationModel;
 use app\Base;
 use app\validation\AddRole;
-use Phalcon\Validation\Message;
 use pms\Validation;
 
 class User extends Base
@@ -191,6 +190,18 @@ class User extends Base
             $re = true;
         }
         return $re;
+    }
+
+    /**
+     * 创始人不可以删除
+     * @return bool
+     */
+    public function beforeDelete()
+    {
+        if ($this->id == 1) {
+            return false;
+        }
+        return true;
     }
 
 }

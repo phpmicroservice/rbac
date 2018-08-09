@@ -10,25 +10,10 @@ namespace app\validation;
 class Role extends \pms\Validation
 {
 
-    # 数据过滤规则
-    protected $filter_rule = [
-        ['identification', 'string'],
-        ['name', 'string'],
-        ['sort', 'int'],
-        ['status', 'int'],
-        ['pid', 'int'],
-        ['can_delete', 'int']
-    ];
+
 
     //定义验证规则
     protected $rules = [
-        'id' => [
-            'exist' => [
-                "message" => "identification",
-                "allowEmpty" => true,
-                'class_name_list' => 'app\model\rbac_role',
-            ]
-        ],
         'identification' => [
             'required' => [
                 "message" => "identification_required",

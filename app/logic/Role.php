@@ -102,7 +102,7 @@ class Role extends \app\Base
      */
     public function add_role($data)
     {
-        output($data, 'info');
+        \pms\output($data, 'info');
         $ft =new AddRole();
         $ft->filter($data);
         $validation = new  validation_Role();

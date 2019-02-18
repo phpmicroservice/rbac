@@ -102,7 +102,7 @@ class Auth extends Base
      */
     public static function add_auth($data)
     {
-        output($data, 'info');
+        \pms\output($data, 'info');
         $validation = new validation_Atuh();
         $user_resourcesModel = new rbac_rule_auth();
         $validation->setRepetition($user_resourcesModel, $data);

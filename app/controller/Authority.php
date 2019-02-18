@@ -44,7 +44,7 @@ class Authority extends Controller
         $id = $this->getData('id');
         $data = $this->getData();
         $re = Auth::edit_auth($id, $data);
-        output($re, '46');
+        \pms\output($re, '46');
         if (is_string($re)) {
             return $this->connect->send_error($re);
         }

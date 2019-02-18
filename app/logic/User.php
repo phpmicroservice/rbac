@@ -60,7 +60,7 @@ class User extends Base
      */
     public static function user(int $uid = 0): array
     {
-        output($uid, 113);
+        \pms\output($uid, 113);
         $user_role_relationModel = new user_role_relationModel();
         $list = $user_role_relationModel->user_roles($uid);
         return $list;

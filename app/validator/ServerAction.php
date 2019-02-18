@@ -44,7 +44,7 @@ class ServerAction extends Validator
             's' => $sername,
             'r' => $actionname,
             'd' => $data,
-            'accessKey' => \get_access(get_env($sername . '_APP_SECRET_KEY'), $data, SERVICE_NAME)
+            'accessKey' => \pms\get_access(\pms\get_env($sername . '_APP_SECRET_KEY'), $data, SERVICE_NAME)
         ]);
 
         if ($re === false || $re['e']) {

@@ -46,7 +46,7 @@ class RoleUpTx extends \pms\Task\TxTask implements TaskInterface
             # 删除角色
             $re = $ser->user_del_role($role_id, $user_id);
         }
-        output($re);
+        \pms\output($re);
         return $re;
     }
 }

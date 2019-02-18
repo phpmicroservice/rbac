@@ -22,7 +22,7 @@ class Alc extends Base
     {
         $this->load_acl(); #读取权限列表
         $this->roleNames = User::role($user_id);
-        output($this->roleNames, 'roleNames');
+        \pms\output($this->roleNames, 'roleNames');
 
     }
 
@@ -129,7 +129,7 @@ class Alc extends Base
         $resourceName = strtolower($resourceName);
         $actionName = strtolower($actionName);
         $re = $this->isAllowed2($this->roleNames, $resourceName, $actionName);
-        output(["权限鉴定结果!", $resourceName, $actionName, $re], "info");
+        \pms\output(["权限鉴定结果!", $resourceName, $actionName, $re], "info");
         return $re;
     }
 

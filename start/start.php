@@ -27,7 +27,7 @@ $loader->registerNamespaces(
 );
 $loader->register();
 
-$server = new \pms\Server('0.0.0.0', 9502, SWOOLE_PROCESS, SWOOLE_SOCK_TCP, [
+$server = new \pms\TcpServer('0.0.0.0', 9502, SWOOLE_PROCESS, SWOOLE_SOCK_TCP, [
     'task_worker_num' => 4,
     'daemonize' => false,
     'reload_async' => false,
